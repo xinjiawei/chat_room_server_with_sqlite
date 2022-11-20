@@ -3,6 +3,12 @@ import { DB } from "https://deno.land/x/sqlite@v3.7.0/mod.ts";
 // Open a database
 const db = new DB("thread.db");
 db.execute(`
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS forum_title;
+DROP TABLE IF EXISTS forum_content;
+`);
+
+db.execute(`
   CREATE TABLE IF NOT EXISTS user (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_name TEXT,
@@ -10,6 +16,7 @@ db.execute(`
     passwd TEXT
   )
 `);
+
 db.execute(`
   CREATE TABLE IF NOT EXISTS forum_title (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,6 +26,7 @@ db.execute(`
     is_delete TEXT
   )
 `);
+
 db.execute(`
   CREATE TABLE IF NOT EXISTS forum_content (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -121,8 +129,8 @@ for (const datasets of data['threads']) {
   const ownerid = datasets.ownerid;
   let order = 1;
   for (const datas of datasets['posts']) {
-
-/*  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  /*
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
     title_id INTEGER,
     user_id INTEGER,
     content TEXT,
@@ -146,7 +154,7 @@ for (const [name] of db.query("SELECT user_realname FROM user")) {
 for (const [name] of db.query("SELECT title FROM forum_title")) {
   console.log(name);
 }
-for (const [name] of db.query("SELECT  FROM forum_content")) {
+for (const [name] of db.query("SELECT content FROM forum_content")) {
   console.log(name);
 }
 
