@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 import { DB } from "https://deno.land/x/sqlite@v3.7.0/mod.ts";
 import * as  bcrypt  from "https://deno.land/x/bcrypt@v0.4.0/mod.ts";
 import { serve, ServerRequest } from "https://deno.land/std@0.90.0/http/server.ts";
@@ -12,7 +13,7 @@ import { apiError, TinyRouter } from "https://cdn.jsdelivr.net/gh/ITECH3108FedUn
 
 const version = "22/05";
 
-
+console.clear();
 // Open a database
 const db = new DB("thread.db");
 db.execute(`
@@ -58,7 +59,7 @@ const databaseJSON = `{
   "users": [
     { "username": "norman", "name": "Norman C. Lowery", "password": "1"},
     { "username": "josa",   "name": "Jósa Marcsa", "password": "1"},
-    { "username": "amanda", "name": "Amanda Costa Rodrigues", "password": "1"},
+    { "username": "norman", "name": "Amanda Costa Rodrigues", "password": "1"},
     { "username": "tiina",  "name": "Tiina Takko", "password": "1"},
     { "username": "owen",   "name": "Owen Dow", "password": "1"}
   ],
@@ -183,19 +184,24 @@ for (const datasets of data['threads']) {
 //console.log(i);
 
 // Print out data in table
-for (const [name] of db.query("SELECT user_realname FROM user")) {
-  console.log(name);
-}
+// for (const [name] of db.query("SELECT user_realname FROM user")) {
+//   console.log(name);
+// }
 
-for (const [name] of db.query("SELECT title FROM forum_title")) {
-  console.log(name);
-}
-for (const [name] of db.query("SELECT content FROM forum_content")) {
-  console.log(name);
-}
+// for (const [name] of db.query("SELECT title FROM forum_title")) {
+//   console.log(name);
+// }
+// for (const [name] of db.query("SELECT content FROM forum_content")) {
+//   console.log(name);
+// }
+
 
 // Close connection
 db.close();
+
+// const result1 = db.query("SELECT passwd FROM user WHERE user_name = 'norman'");
+// console.log(result1);
+
 
 
 //To hash a password (with auto-generated salt):
@@ -208,7 +214,72 @@ console.log(result);
 /* Set up some routes to handle */
 const router = new TinyRouter();
 
+router.post("^/api/v1/register/?$", (req: { json: {
+userrealname: any; username: any; password: any;
+}; }, params: any) => {
+  const username = req.json.username;
+  const password = req.json.password;
+  const userrealname = req.json.userrealname;
+  const db = new DB("thread.db");
+  
+  const re0 = JSON.stringify(db.query<[string, number]>("SELECT * FROM user WHERE user_name = ?", [username]));
+  const re = eval('(' + re0 + ')');
+  console.log(re.toString());
+  if(re.toString() == "") {
+    db.query<[string, number]>("INSERT INTO user (user_name,user_realname,passwd) VALUES (?,?,?)", [username, userrealname, password]);
+    const info = {
+      status: "success",
+      name: username
+    };
+    return {
+      body: info,
+      status: Status.OK,
+    }
+  } else {
+    return apiError(`user ${req.json.username} already exist`,Status.OK,);
+  }
+  // Close connection
+  db.close();
+}
+);
 /* Give an index page when accessing the front */
+router.post("^/api/v1/login/?$", (req: { json: { username: any; password: any;}; }, params: any) => {
+  const username = req.json.username;
+  const password = req.json.password;
+  const db = new DB("thread.db");
+  
+  const re0 = JSON.stringify(db.query<[string, number]>("SELECT * FROM user  WHERE user_name = ?", [username]));
+  const re = eval('(' + re0 + ')');
+  console.log("cc2: " + re[1]);
+  let sqlattr = re[1].toString().split(",",);
+  console.log("id: " + sqlattr[0]);
+  console.log("name: " + sqlattr[1]);
+  //const result1 = re.passwd;
+
+  if(sqlattr[3] == password) {
+    const info = {
+      status: "success",
+      id: sqlattr[0],
+      name: username,
+      realname: sqlattr[2]
+
+      // posts: [{
+      //   text: req.json.text,
+      //   user: req.json.user,
+      // }]
+    };
+    // Close connection
+    db.close();
+
+    return {
+      body: info,
+      status: Status.OK,
+    };
+  } else {
+    return apiError(`PASSWORD ERROE ${req.json.username}`,Status.OK,);
+  }
+});
+
 router.get("^/?$", getIndexer(router, data));
 router.get(
   "^/api/threads/?$",
@@ -237,6 +308,7 @@ router.get("^", async (req: ServerRequest, params: any) => {
     };
   }
 });
+
 
 async function main() {
   /* Create the server! */
