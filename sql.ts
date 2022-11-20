@@ -60,7 +60,7 @@ const databaseJSON = `{
   "users": [
     { "username": "norman", "name": "Norman C. Lowery", "password": "1"},
     { "username": "josa",   "name": "Jósa Marcsa", "password": "1"},
-    { "username": "norman", "name": "Amanda Costa Rodrigues", "password": "1"},
+    { "username": "alisa", "name": "Amanda Costa Rodrigues", "password": "1"},
     { "username": "tiina",  "name": "Tiina Takko", "password": "1"},
     { "username": "owen",   "name": "Owen Dow", "password": "1"}
   ],
@@ -147,7 +147,7 @@ for (const datas of data['users']) {
     user_realname TEXT,
     passwd TEXT
     */
-  db.query("INSERT INTO user (user_name,user_realname,passwd) VALUES (?,?,?)", [datas.username, datas.name, datas.password]);
+  db.query("INSERT INTO user (user_name,user_realname,passwd) VALUES (?,?,?)", [datas.username, datas.name, bcrypt.hashSync(datas.password)]);
 }
 
 for (const datas of data['threads']) {
@@ -208,11 +208,11 @@ db.close();
 
 
 
-//To hash a password (with auto-generated salt):
-const hash = bcrypt.hashSync("test");
-//To check a password:
-const result = bcrypt.compareSync("test", hash);
-console.log(result);
+// //To hash a password (with auto-generated salt):
+// const hash = bcrypt.hashSync("test");
+// //To check a password:
+// const result = bcrypt.compareSync("test", hash);
+// console.log(result);
 
 
 /* Set up some routes to handle */
@@ -221,8 +221,10 @@ const router = new TinyRouter();
 router.post("^/api/v1/register/?$", (req: { json: {
 userrealname: any; username: any; password: any;
 }; }, params: any) => {
+
   const username = req.json.username;
-  const password = req.json.password;
+  //To hash a password (with auto-generated salt):
+  const password = bcrypt.hashSync(req.json.password);
   const userrealname = req.json.userrealname;
   const db = new DB("thread.db");
   
@@ -254,13 +256,15 @@ router.post("^/api/v1/login/?$", (req: { json: { username: any; password: any;};
   
   const re0 = JSON.stringify(db.query<[string, number]>("SELECT * FROM user  WHERE user_name = ?", [username]));
   const re = eval('(' + re0 + ')');
-  console.log("cc2: " + re[1]);
-  let sqlattr = re[1].toString().split(",",);
+  console.log("cc2: " + re[0]);
+  
+  //返回多个同名用户,默认取第一个, 虽然不可能发生.
+  let sqlattr = re[0].toString().split(",",);
   console.log("id: " + sqlattr[0]);
   console.log("name: " + sqlattr[1]);
   //const result1 = re.passwd;
-
-  if(sqlattr[3] == password) {
+  //To check a password:
+  if(bcrypt.compareSync(password, sqlattr[3])) {
     const info = {
       status: "success",
       id: sqlattr[0],
@@ -363,7 +367,7 @@ router.post("^/api/v1/getavgscore/?$", (req: { json: {titleid: any;}; }, params:
 
   const db = new DB("thread.db");
   
-  const re0 = JSON.stringify(db.query<[string, number]>("SELECT avg(score) FROM forum_content WHERE title_id = ?", [titleid]));
+  const re0 = JSON.stringify(db.query<[string, number]>("SELECT avg(score) FROM forum_content WHERE title_id = ? AND is_hidden = 0", [titleid]));
   const re = eval('(' + re0 + ')').toString();
   console.log("avgscore: " + re);
   //const result1 = re.passwd;
