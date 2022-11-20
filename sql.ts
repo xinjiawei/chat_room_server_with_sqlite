@@ -36,6 +36,7 @@ db.execute(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     owner_id INTEGER,
     title TEXT,
+    body TEXT,
     icon TEXT,
     is_delete TEXT
   )
@@ -66,6 +67,7 @@ const databaseJSON = `{
   "threads": [
     {
       "thread_title": "Does anybody play an instrument?",
+      "body": "aaaaaaa",
       "icon": "🎸",
       "ownerid": 1,
       "posts": [
@@ -97,6 +99,7 @@ const databaseJSON = `{
     },
     {
       "thread_title": "Hey everybody!",
+      "body": "bbbbbbb",
       "ownerid": 2,
       "icon": "👋",
       "posts": [
@@ -152,10 +155,11 @@ for (const datas of data['threads']) {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
     owner_id INTEGER,
     title TEXT,
+    body TEXT,
     icon TEXT,
     is_delete TEXT
     */
-  db.query("INSERT INTO forum_title (owner_id,title,icon,is_delete) VALUES (?,?,?,?)", [datas.user, datas.thread_title, 
+  db.query("INSERT INTO forum_title (owner_id,title,body,icon,is_delete) VALUES (?,?,?,?,?)", [datas.ownerid, datas.thread_title, datas.body,
     datas.icon, '0']);
 }
 
@@ -280,6 +284,66 @@ router.post("^/api/v1/login/?$", (req: { json: { username: any; password: any;};
   }
 });
 
+router.get("^/api/v1/threads/?$", (_req: any, params: any[]) => {
+  /*
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+    owner_id INTEGER,
+    title TEXT,
+    body TEXT,
+    icon TEXT,
+    is_delete TEXT
+    */
+  const db = new DB("thread.db");
+  const re0 = JSON.stringify(db.query<[string, number]>("SELECT * FROM forum_title WHERE is_delete = ?",["0"]));
+  const re = eval('(' + re0 + ')');
+  console.log(re[0]);  
+  return re;
+    // Close connection
+    db.close();
+  
+});
+
+router.post("^/api/v1/postnewpoem/?$", (req: { json: {
+userid: any;
+title: any;
+body: any;
+icon: any;
+}; }, params: any) => {
+  /*
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  owner_id INTEGER,
+  title TEXT,
+  body TEXT,
+  icon TEXT,
+  is_delete TEXT
+  */
+  const userid = req.json.userid;
+  const title = req.json.title;
+  const body = req.json.body;
+  const icon = req.json.icon;
+
+  const db = new DB("thread.db");
+  
+  const quary0 = JSON.stringify(db.query<[string, number]>("SELECT user_name FROM user WHERE user_id = ?", [userid]));
+  const result = eval('(' + quary0 + ')');
+  console.log(result.toString());
+  if(result.toString() !== "") {
+    db.query<[string, number]>("INSERT INTO forum_title (owner_id,title,body,icon,is_delete) VALUES (?,?,?,?,?)",
+     [userid, title, body, icon, "0"]);
+    const info = {
+      status: "success",
+      userid: userid
+    };
+    return {
+      body: info,
+      status: Status.OK,
+    }
+  } else {
+    return apiError(` id ${req.json.userid} not exist`,Status.OK,);
+  }
+  // Close connection
+  db.close();
+});
 router.get("^/?$", getIndexer(router, data));
 router.get(
   "^/api/threads/?$",
