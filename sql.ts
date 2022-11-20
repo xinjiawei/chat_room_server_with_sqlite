@@ -296,8 +296,21 @@ router.get("^/api/v1/threads/?$", (_req: any, params: any[]) => {
   const db = new DB("thread.db");
   const re0 = JSON.stringify(db.query<[string, number]>("SELECT * FROM forum_title WHERE is_delete = ?",["0"]));
   const re = eval('(' + re0 + ')');
+  let sqlattr = re[0].toString().split(",",);
   console.log(re[0]);  
-  return re;
+
+  const tempdataset = {"threads": []};
+for (const datas of re) {
+  let sqlattr = datas.toString().split(",",);
+  let json_string = "{id: '"+ sqlattr[0] + "', owner_id: '" +sqlattr[1]+"', title: '"+ sqlattr[2] + "', body: '" +sqlattr[3]+ "', icon: '" +sqlattr[4]+"'}";
+  let json_data = eval('(' + json_string + ')');
+  tempdataset.threads.push(json_data);
+  console.log(json_data);
+}
+console.log(tempdataset);
+
+
+  return (tempdataset);
     // Close connection
     db.close();
   
