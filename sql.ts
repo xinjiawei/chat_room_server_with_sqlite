@@ -85,7 +85,7 @@ const databaseJSON = `{
         },
         {
           "text": "Ok. Thanks for your contribution @amanda",
-          "score": 5,
+          "score": 50,
           "hidden": 0,
           "userid": 1
         },
@@ -357,6 +357,35 @@ icon: any;
   // Close connection
   db.close();
 });
+
+router.post("^/api/v1/getavgscore/?$", (req: { json: {titleid: any;}; }, params: any) => {
+  const titleid = req.json.titleid;
+
+  const db = new DB("thread.db");
+  
+  const re0 = JSON.stringify(db.query<[string, number]>("SELECT avg(score) FROM forum_content WHERE title_id = ?", [titleid]));
+  const re = eval('(' + re0 + ')').toString();
+  console.log("avgscore: " + re);
+  //const result1 = re.passwd;
+
+  if(re !== "") {
+    const info = {
+      status: "success",
+      titleid: titleid,
+      score: re
+    };
+    // Close connection
+    db.close();
+
+    return {
+      body: info,
+      status: Status.OK,
+    };
+  } else {
+    return apiError(`no titleid ${req.json.titleid}`,Status.OK,);
+  }
+});
+
 router.get("^/?$", getIndexer(router, data));
 router.get(
   "^/api/threads/?$",
