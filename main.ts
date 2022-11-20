@@ -7,7 +7,7 @@ import { posix } from "https://deno.land/std@0.90.0/path/mod.ts";
 import { Status } from "https://deno.land/std@0.90.0/http/http_status.ts";
 
 
-import { getIndexer } from "https://cdn.jsdelivr.net/gh/ITECH3108FedUni/assignment_api/index.js";
+import { getIndexer } from "./index.js";
 
 import { apiError, TinyRouter } from "https://cdn.jsdelivr.net/gh/ITECH3108FedUni/assignment_api/router.js";
 
@@ -325,7 +325,7 @@ console.log(tempdataset);
 });
 
 
-router.get("^/api/v1/getmycomments/(\\w+)/?$", (_req: any, params: any[]) => {
+router.get("^/api/v1/getmycomments/(\\d+)/?$", (_req: any, params: any[]) => {
   /*
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title_id INTEGER,
@@ -363,7 +363,7 @@ console.log(tempdataset);
   
 });
 
-router.get("^/api/v1/getcomments/(\\w+)/?$", (_req: any, params: any[]) => {
+router.get("^/api/v1/getcomments/(\\d+)/?$", (_req: any, params: any[]) => {
   /*
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title_id INTEGER,
