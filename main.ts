@@ -7,9 +7,9 @@ import { posix } from "https://deno.land/std@0.90.0/path/mod.ts";
 import { Status } from "https://deno.land/std@0.90.0/http/http_status.ts";
 
 
-import { getIndexer } from "./index.js";
+import { getIndexer } from "./static/index.js";
 
-import { apiError, TinyRouter } from "https://cdn.jsdelivr.net/gh/ITECH3108FedUni/assignment_api/router.js";
+import { apiError, TinyRouter } from "./static/router.js";
 
 
 const version = "22/05";
