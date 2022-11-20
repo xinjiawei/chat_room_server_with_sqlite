@@ -11,10 +11,6 @@ import { getIndexer } from "https://cdn.jsdelivr.net/gh/ITECH3108FedUni/assignme
 
 import { apiError, TinyRouter } from "https://cdn.jsdelivr.net/gh/ITECH3108FedUni/assignment_api/router.js";
 
-import {
-  RouteHandler,
-  Router,
-} from "https://deno.land/x/tinyrouter@1.0.0/mod.ts";
 
 const version = "22/05";
 
@@ -261,6 +257,7 @@ router.post("^/api/v1/login/?$", (req: { json: { username: any; password: any;};
   
   const re0 = JSON.stringify(db.query<[string, number]>("SELECT * FROM user  WHERE user_name = ?", [username]));
   const re = eval('(' + re0 + ')');
+  if(re.toString() == "") return apiError(`user ${username} have no exist`,Status.NotFound,);
   console.log("cc2: " + re[0]);
   
   //返回多个同名用户,默认取第一个, 虽然不可能发生.
@@ -344,6 +341,8 @@ router.get("^/api/v1/getmycomments/(\\w+)/?$", (_req: any, params: any[]) => {
   //大于三分算正面评价.
   const re0 = JSON.stringify(db.query<[string, number]>("SELECT * FROM forum_content WHERE score > 3 AND user_id = ?",[userid]));
   const re = eval('(' + re0 + ')');
+  //console.log(re); 
+  if(re.toString() == "") return apiError(`id ${userid} have no comments`,Status.NotFound,);
   let attr = insteadStr(re[0]);
   console.log(attr);  
 
@@ -351,6 +350,43 @@ router.get("^/api/v1/getmycomments/(\\w+)/?$", (_req: any, params: any[]) => {
 for (const datas of re) {
   let sqlattr = insteadStr(datas);
   let json_string = "{id: '"+ sqlattr[0] + "', titleid: '" +sqlattr[1]+"', content: '"+ sqlattr[3] + "', score: '" +sqlattr[4]+ "', ishidden: '" +sqlattr[6]+"'}";
+  let json_data = eval('(' + json_string + ')');
+  tempdataset.commnets.push(json_data);
+  //console.log(json_data);
+}
+console.log(tempdataset);
+
+
+  return (tempdataset);
+    // Close connection
+    db.close();
+  
+});
+
+router.get("^/api/v1/getcomments/(\\w+)/?$", (_req: any, params: any[]) => {
+  /*
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title_id INTEGER,
+    user_id INTEGER,
+    content TEXT,
+    score INTEGER,
+    orders INTEGER,
+    is_hidden INTEGER,
+    is_delete TEXT
+    */
+  const titleid = params[0];
+  const db = new DB("thread.db");
+  //大于三分算正面评价.
+  const re0 = JSON.stringify(db.query<[string, number]>("SELECT * FROM forum_content WHERE is_hidden = 0 AND title_id = ?",[titleid]));
+  const re = eval('(' + re0 + ')');
+  if(re.toString() == "") return apiError(`id ${titleid} have no comments`,Status.NotFound,);
+  let attr = insteadStr(re[0]);
+  console.log(attr);  
+
+  const tempdataset = {"title_id": titleid,"commnets": []};
+for (const datas of re) {
+  let sqlattr = insteadStr(datas);
+  let json_string = "{id: '"+ sqlattr[0] + "', userid: '" +sqlattr[2]+"', content: '"+ sqlattr[3] + "', score: '" +sqlattr[4]+"'}";
   let json_data = eval('(' + json_string + ')');
   tempdataset.commnets.push(json_data);
   //console.log(json_data);
@@ -441,7 +477,8 @@ router.post("^/api/v1/comment/?$", (req: { json: {
 userid: any;
 comment: any;
 scores: any;
-ishidden: any;titleid: any;
+ishidden: any;
+titleid: any;
 }; }, params: any) => {
   const titleid = req.json.titleid;
   const userid = req.json.userid;
@@ -450,7 +487,7 @@ ishidden: any;titleid: any;
   const ishidden = req.json.ishidden;
 
   const db = new DB("thread.db");
-  
+  //TODO 每人只能评论一次, 只能评论存在的帖子 但是不存在的用户也能评论存在的帖子 也没有做参数类型强校验.
   const re0 = JSON.stringify(db.query<[string, number]>("SELECT user_id FROM forum_content WHERE title_id = ?", [titleid]));
   const re = eval('(' + re0 + ')').toString();
   let userids = re.toString().split(",",);
