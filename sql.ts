@@ -240,7 +240,7 @@ userrealname: any; username: any; password: any;
       status: Status.OK,
     }
   } else {
-    return apiError(`user ${req.json.username} already exist`,Status.OK,);
+    return apiError(`user ${req.json.username} already exist`,Status.Conflict,);
   }
   // Close connection
   db.close();
@@ -280,7 +280,7 @@ router.post("^/api/v1/login/?$", (req: { json: { username: any; password: any;};
       status: Status.OK,
     };
   } else {
-    return apiError(`PASSWORD ERROE ${req.json.username}`,Status.OK,);
+    return apiError(`PASSWORD ERROE ${req.json.username}`,Status.Forbidden,);
   }
 });
 
@@ -352,7 +352,7 @@ icon: any;
       status: Status.OK,
     }
   } else {
-    return apiError(` id ${req.json.userid} not exist`,Status.OK,);
+    return apiError(` id ${req.json.userid} not exist`,Status.Conflict,);
   }
   // Close connection
   db.close();
@@ -382,7 +382,65 @@ router.post("^/api/v1/getavgscore/?$", (req: { json: {titleid: any;}; }, params:
       status: Status.OK,
     };
   } else {
-    return apiError(`no titleid ${req.json.titleid}`,Status.OK,);
+    return apiError(`no titleid ${req.json.titleid}`,Status.NotFound,);
+  }
+});
+
+router.post("^/api/v1/comment/?$", (req: { json: {
+userid: any;
+comment: any;
+scores: any;
+ishidden: any;titleid: any;
+}; }, params: any) => {
+  const titleid = req.json.titleid;
+  const userid = req.json.userid;
+  const comment = req.json.comment;
+  const scores = req.json.scores;
+  const ishidden = req.json.ishidden;
+
+  const db = new DB("thread.db");
+  
+  const re0 = JSON.stringify(db.query<[string, number]>("SELECT user_id FROM forum_content WHERE title_id = ?", [titleid]));
+  const re = eval('(' + re0 + ')').toString();
+  let userids = re.toString().split(",",);
+  for(const item of userids){
+    if(item == userid) 
+      return apiError(`you are alredy commnet ${req.json.titleid}`,Status.Conflict,)
+    else {
+      continue;
+    }
+  }
+          /*
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title_id INTEGER,
+    user_id INTEGER,
+    content TEXT,
+    score INTEGER,
+    orders INTEGER,
+    is_hidden INTEGER,
+    is_delete TEXT
+    */
+  db.query<[string, number]>("INSERT INTO forum_content (title_id,user_id,content,score,is_hidden,is_delete) VALUES (?,?,?,?,?,?)", 
+  [titleid, userid, comment,scores,ishidden,"0"]);
+
+  console.log("all commented users: " + re);
+  //const result1 = re.passwd;
+
+  // 在这个表里titleid和userid是共存的, 如果有title_id ,必然至少有一个user_id, 所以不用担心user id是否为空的情况.
+  if(re !== "") {
+    const info = {
+      status: "success",
+      titleid: titleid
+    };
+    // Close connection
+    db.close();
+
+    return {
+      body: info,
+      status: Status.OK,
+    };
+  } else {
+    return apiError(`no titleid ${req.json.titleid}`,Status.NotFound,);
   }
 });
 
