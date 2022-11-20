@@ -157,7 +157,7 @@ router.get("^/api/users/(\\w+)/?$", (_, params) => {
 });
 
 /* Return the threads started by a particular user */
-router.get("^/api/users/(\\w+)/threads/?$", (_req, params) => {
+router.get("^/api/users/(\\w+)/threads/?$", (req, params) => {
   const user = database.users.find((u) => u.username == params[0]);
   if (!user) {
     return apiError(`No matching user ${params[0]}`,

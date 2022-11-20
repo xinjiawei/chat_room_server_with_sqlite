@@ -11,6 +11,11 @@ import { getIndexer } from "https://cdn.jsdelivr.net/gh/ITECH3108FedUni/assignme
 
 import { apiError, TinyRouter } from "https://cdn.jsdelivr.net/gh/ITECH3108FedUni/assignment_api/router.js";
 
+import {
+  RouteHandler,
+  Router,
+} from "https://deno.land/x/tinyrouter@1.0.0/mod.ts";
+
 const version = "22/05";
 
 console.clear();
@@ -72,7 +77,7 @@ const databaseJSON = `{
       "ownerid": 1,
       "posts": [
         {
-          "text": "I love to play guitar, anybody else?",
+          "text": "I love to play guitar anybody else?",
           "score": 5,
           "hidden": 0,
           "userid": 1
@@ -80,13 +85,13 @@ const databaseJSON = `{
         {
           "text": "Not me.",
           "score": 5,
-          "hidden": 0,
+          "hidden": 1,
           "userid": 3
         },
         {
           "text": "Ok. Thanks for your contribution @amanda",
           "score": 50,
-          "hidden": 0,
+          "hidden": 1,
           "userid": 1
         },
         {
@@ -129,7 +134,7 @@ const databaseJSON = `{
         },
         {
           "text": "@amanda be nice. Last warning.",
-          "score": 5,
+          "score": 2,
           "hidden": 0,
           "userid": 1
         }
@@ -259,17 +264,19 @@ router.post("^/api/v1/login/?$", (req: { json: { username: any; password: any;};
   console.log("cc2: " + re[0]);
   
   //返回多个同名用户,默认取第一个, 虽然不可能发生.
-  let sqlattr = re[0].toString().split(",",);
-  console.log("id: " + sqlattr[0]);
-  console.log("name: " + sqlattr[1]);
+
+  let attr = insteadStr(re[0]);
+
+  console.log("id: " + attr[0]);
+  console.log("name: " + attr[1]);
   //const result1 = re.passwd;
   //To check a password:
-  if(bcrypt.compareSync(password, sqlattr[3])) {
+  if(bcrypt.compareSync(password, attr[3])) {
     const info = {
       status: "success",
-      id: sqlattr[0],
+      id: attr[0],
       name: username,
-      realname: sqlattr[2]
+      realname: attr[2]
 
       // posts: [{
       //   text: req.json.text,
@@ -288,7 +295,7 @@ router.post("^/api/v1/login/?$", (req: { json: { username: any; password: any;};
   }
 });
 
-router.get("^/api/v1/threads/?$", (_req: any, params: any[]) => {
+router.get("^/api/v1/getthreads/?$", (_req: any, params: any[]) => {
   /*
       id INTEGER PRIMARY KEY AUTOINCREMENT,
     owner_id INTEGER,
@@ -300,16 +307,53 @@ router.get("^/api/v1/threads/?$", (_req: any, params: any[]) => {
   const db = new DB("thread.db");
   const re0 = JSON.stringify(db.query<[string, number]>("SELECT * FROM forum_title WHERE is_delete = ?",["0"]));
   const re = eval('(' + re0 + ')');
-  let sqlattr = re[0].toString().split(",",);
+  let attr = insteadStr(re[0]);
   console.log(re[0]);  
 
   const tempdataset = {"threads": []};
 for (const datas of re) {
-  let sqlattr = datas.toString().split(",",);
+  let sqlattr = insteadStr(datas);
   let json_string = "{id: '"+ sqlattr[0] + "', owner_id: '" +sqlattr[1]+"', title: '"+ sqlattr[2] + "', body: '" +sqlattr[3]+ "', icon: '" +sqlattr[4]+"'}";
   let json_data = eval('(' + json_string + ')');
   tempdataset.threads.push(json_data);
   console.log(json_data);
+}
+console.log(tempdataset);
+
+
+  return (tempdataset);
+    // Close connection
+    db.close();
+  
+});
+
+
+router.get("^/api/v1/getmycomments/(\\w+)/?$", (_req: any, params: any[]) => {
+  /*
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title_id INTEGER,
+    user_id INTEGER,
+    content TEXT,
+    score INTEGER,
+    orders INTEGER,
+    is_hidden INTEGER,
+    is_delete TEXT
+    */
+  const userid = params[0];
+  const db = new DB("thread.db");
+  //大于三分算正面评价.
+  const re0 = JSON.stringify(db.query<[string, number]>("SELECT * FROM forum_content WHERE score > 3 AND user_id = ?",[userid]));
+  const re = eval('(' + re0 + ')');
+  let attr = insteadStr(re[0]);
+  console.log(attr);  
+
+  const tempdataset = {"user_id": userid,"commnets": []};
+for (const datas of re) {
+  let sqlattr = insteadStr(datas);
+  let json_string = "{id: '"+ sqlattr[0] + "', titleid: '" +sqlattr[1]+"', content: '"+ sqlattr[3] + "', score: '" +sqlattr[4]+ "', ishidden: '" +sqlattr[6]+"'}";
+  let json_data = eval('(' + json_string + ')');
+  tempdataset.commnets.push(json_data);
+  //console.log(json_data);
 }
 console.log(tempdataset);
 
@@ -366,8 +410,11 @@ router.post("^/api/v1/getavgscore/?$", (req: { json: {titleid: any;}; }, params:
   const titleid = req.json.titleid;
 
   const db = new DB("thread.db");
-  
-  const re0 = JSON.stringify(db.query<[string, number]>("SELECT avg(score) FROM forum_content WHERE title_id = ? AND is_hidden = 0", [titleid]));
+  // 会把评分也隐藏
+  //const re0 = JSON.stringify(db.query<[string, number]>("SELECT avg(score) FROM forum_content WHERE title_id = ? AND is_hidden = 0", [titleid]));
+  //只隐藏评论
+  const re0 = JSON.stringify(db.query<[string, number]>("SELECT avg(score) FROM forum_content WHERE title_id = ?", [titleid]));
+
   const re = eval('(' + re0 + ')').toString();
   console.log("avgscore: " + re);
   //const result1 = re.passwd;
@@ -449,10 +496,6 @@ ishidden: any;titleid: any;
 });
 
 router.get("^/?$", getIndexer(router, data));
-router.get(
-  "^/api/threads/?$",
-  () => data.threads.map(({ posts, ...rest }) => rest),
-);
 
 router.add("OPTIONS", "^", () => "");
 
@@ -498,6 +541,14 @@ async function main() {
   }
 }
 
+function insteadStr(t: any){
+  let str=t.toString()
+  let n=str.replace(/,/g,"#.#");
+  console.log("cc3: " + n);
+  let sqlattr = n.split("#.#",);
+  // TODO 逗号分隔是个大问题.得替换
+  return sqlattr;
+}
 /* Adapted from https://deno.land/std@0.90.0/http/file_server.ts */
 function normalizeURL(url: any) {
   let normalizedUrl = url;
