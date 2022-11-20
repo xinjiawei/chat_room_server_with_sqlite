@@ -7,9 +7,9 @@ import {
   isWebSocketCloseEvent,
 } from "https://deno.land/std@0.90.0/ws/mod.ts";
 
-import { getHighlightedJson, getIndexer } from "./index.js";
+import { getHighlightedJson, getIndexer } from "https://cdn.jsdelivr.net/gh/ITECH3108FedUni/assignment_api/index.js";
 
-import { apiError, TinyRouter } from "./router.js";
+import { apiError, TinyRouter } from "https://cdn.jsdelivr.net/gh/ITECH3108FedUni/assignment_api/router.js";
 
 const version = "22/05";
 
