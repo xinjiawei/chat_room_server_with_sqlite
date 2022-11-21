@@ -1,10 +1,19 @@
 // deno-lint-ignore-file
-import { DB } from "https://deno.land/x/sqlite@v3.7.0/mod.ts";
+// import { DB } from "https://deno.land/x/sqlite@v3.7.0/mod.ts";
 import * as  bcrypt  from "https://deno.land/x/bcrypt@v0.4.0/mod.ts";
-import { serve, ServerRequest } from "https://deno.land/std@0.90.0/http/server.ts";
-import { serveFile } from "https://deno.land/std@0.90.0/http/file_server.ts";
-import { posix } from "https://deno.land/std@0.90.0/path/mod.ts";
-import { Status } from "https://deno.land/std@0.90.0/http/http_status.ts";
+// import { serve, ServerRequest } from "https://deno.land/std@0.90.0/http/server.ts";
+// import { serveFile } from "https://deno.land/std@0.90.0/http/file_server.ts";
+// import { posix } from "https://deno.land/std@0.90.0/path/mod.ts";
+// import { Status } from "https://deno.land/std@0.90.0/http/http_status.ts";
+
+// import { getIndexer } from "./static/index.js";
+// import { apiError, TinyRouter } from "./static/router.js";
+
+import { DB } from "./deps.ts";
+import { serve, ServerRequest } from "./deps.ts";
+import { serveFile } from "./deps.ts";
+import { posix } from "./deps.ts";
+import { Status } from "./deps.ts";
 
 import { getIndexer } from "./static/index.js";
 import { apiError, TinyRouter } from "./static/router.js";
