@@ -6,9 +6,7 @@ import { serveFile } from "https://deno.land/std@0.90.0/http/file_server.ts";
 import { posix } from "https://deno.land/std@0.90.0/path/mod.ts";
 import { Status } from "https://deno.land/std@0.90.0/http/http_status.ts";
 
-
 import { getIndexer } from "./static/index.js";
-
 import { apiError, TinyRouter } from "./static/router.js";
 
 
