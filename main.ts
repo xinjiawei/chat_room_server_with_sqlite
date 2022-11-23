@@ -348,7 +348,7 @@ router.get("^/api/v1/getthreads/?$", (_req: any, params: any[]) => {
 for (const datas of re) {
   let sqlattr = insteadAndSplitStr(datas,",","#.#");
   console.log(sqlattr);  
-  let json_string = "{id: '"+ sqlattr[0] + "', owner_id: '" +sqlattr[1]+"', title: '"+ insteadStr(insteadStr(insteadStr(sqlattr[2],"\\","\\\\"),"\'","\\\'"),"\"","\\\"") + "', body: '" +insteadStr(insteadStr(insteadStr(sqlattr[3],"\\","\\\\"),"\'","\\\'"),"\"","\\\"")+ "', icon: '" +sqlattr[4]+"'}";
+  let json_string = "{id: '"+ sqlattr[0] + "', owner_id: '" +sqlattr[1]+"', title: '"+ insteadStr(insteadStr(insteadStr(sqlattr[2],"\\\\","\\\\"),"\'","\\\'"),"\"","\\\"") + "', body: '" +insteadStr(insteadStr(insteadStr(sqlattr[3],"\\\\","\\\\"),"\'","\\\'"),"\"","\\\"")+ "', icon: '" +sqlattr[4]+"'}";
   let json_data = eval('(' + json_string + ')');
   tempdataset.threads.push(json_data);
   console.log(json_data);
@@ -387,7 +387,7 @@ router.get("^/api/v1/getmycomments/(\\d+)/?$", (_req: any, params: any[]) => {
 for (const datas of re) {
   let sqlattr = insteadAndSplitStr(datas,",","#.#");
   console.log("pure database commment content : " + sqlattr[3]);
-  let json_string = "{id: '"+ sqlattr[0] + "', titleid: '" + sqlattr[1] +"', content: '"+ insteadStr(insteadStr(insteadStr(sqlattr[3],"\\","\\\\"),"\'","\\\'"),"\"","\\\"") + "', score: '" +sqlattr[4]+ "', ishidden: '" +sqlattr[6]+"'}";
+  let json_string = "{id: '"+ sqlattr[0] + "', titleid: '" + sqlattr[1] +"', content: '"+ insteadStr(insteadStr(insteadStr(sqlattr[3],"\\\\","\\\\"),"\'","\\\'"),"\"","\\\"") + "', score: '" +sqlattr[4]+ "', ishidden: '" +sqlattr[6]+"'}";
   console.log("json_string: " + json_string);
   let json_data = eval('(' + json_string + ')');
   tempdataset.commnets.push(json_data);
