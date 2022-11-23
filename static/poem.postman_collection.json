@@ -1,0 +1,269 @@
+{
+	"info": {
+		"_postman_id": "7a467c80-1b9f-4271-8182-226dd232ea55",
+		"name": "poem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"norman\",\"password\": \"1\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://act.jiawei.xin:23110/api/v1/login",
+					"protocol": "http",
+					"host": [
+						"act",
+						"jiawei",
+						"xin"
+					],
+					"port": "23110",
+					"path": [
+						"api",
+						"v1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"norman2\",\"password\": \"1000\",\"userrealname\":\"00\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://act.jiawei.xin:23110/api/v1/register",
+					"protocol": "http",
+					"host": [
+						"act",
+						"jiawei",
+						"xin"
+					],
+					"port": "23110",
+					"path": [
+						"api",
+						"v1",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postnewpoem",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"userid\": 1,\"title\": \"any\",\"body\": \"any\",\"icon\": \"👋\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://act.jiawei.xin:23110/api/v1/postnewpoem",
+					"protocol": "http",
+					"host": [
+						"act",
+						"jiawei",
+						"xin"
+					],
+					"port": "23110",
+					"path": [
+						"api",
+						"v1",
+						"postnewpoem"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getthread",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://act.jiawei.xin:23110/api/v1/getthreads",
+					"protocol": "http",
+					"host": [
+						"act",
+						"jiawei",
+						"xin"
+					],
+					"port": "23110",
+					"path": [
+						"api",
+						"v1",
+						"getthreads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getavgscore",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"titleid\":1}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://act.jiawei.xin:23110/api/v1/getavgscore",
+					"protocol": "http",
+					"host": [
+						"act",
+						"jiawei",
+						"xin"
+					],
+					"port": "23110",
+					"path": [
+						"api",
+						"v1",
+						"getavgscore"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "commnet",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"userid\": 1,\"titleid\": 100,\"comment\": \"any\",\"scores\": 5,\"ishidden\":0}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://act.jiawei.xin:23110/api/v1/comment/",
+					"protocol": "http",
+					"host": [
+						"act",
+						"jiawei",
+						"xin"
+					],
+					"port": "23110",
+					"path": [
+						"api",
+						"v1",
+						"comment",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getmycomments",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://act.jiawei.xin:23110/api/v1/getmycomments/1",
+					"protocol": "http",
+					"host": [
+						"act",
+						"jiawei",
+						"xin"
+					],
+					"port": "23110",
+					"path": [
+						"api",
+						"v1",
+						"getmycomments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://act.jiawei.xin:23110/",
+					"protocol": "http",
+					"host": [
+						"act",
+						"jiawei",
+						"xin"
+					],
+					"port": "23110",
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getallcomments",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://act.jiawei.xin:23110/api/v1/getcomments/1",
+					"protocol": "http",
+					"host": [
+						"act",
+						"jiawei",
+						"xin"
+					],
+					"port": "23110",
+					"path": [
+						"api",
+						"v1",
+						"getcomments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

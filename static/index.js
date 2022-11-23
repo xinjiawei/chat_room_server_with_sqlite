@@ -63,18 +63,7 @@ export function getIndexer(router, database) {
 
     const tpl = `<!DOCTYPE html>
       <html>
-          <!--
-          Hi there! Good for you for exploring this code and seeing what it
-          does! You'll notice that there's some WebSocket stuff going on in
-          this code. Don't worry - you don't need to use WebSockets in your
-          assignment, but they're pretty neat!
-          We use them here so that your developer tools stay nice and clean,
-          and also so that the server can immediately update your database
-          contents view. You can simulate this effect by polling a REST
-          endpoint, but this approach is a little cleaner (as long as the
-          WebSocket stays connected!) 
-          -->
-          <head><title>ITECH3108 Assignment</title>
+          <head><title>Assignment2</title>
           <meta charset="utf-8">
           <style>
             body {
@@ -151,12 +140,13 @@ export function getIndexer(router, database) {
           
           </head>
           <body>
-              <h1>ITECH3108 Assignment 1</h1>
+              <h1>Assignment 2</h1>
               <div class="content">
                 <div id="endpoints">
                   <h3>API endpoints:</h1>
                   <p>URL components listed in bold and blue below are configurable
-                  - replace them with your values (as in the example column)</p>
+                  - replace them with your values (as in the example column)</p><p>
+                  <a href="./poem.postman_collection.json">postman接口测试工程文件</a></p>
                   <table>
                   <tr>
                       <th>Method</th>
@@ -169,46 +159,11 @@ export function getIndexer(router, database) {
                 </div>
     
                 <div id="contents">
-                  <h3>Current contents of database</h3>
+                  <h3>Initial contents of database</h3>
                   <pre id="database_contents">${getHighlightedJson(database)}</pre>
                 </div>
               </div>
-              <script>/*
-              Hook up a WebSocket to keep the database refreshed without timeouts,
-              and without polluting the developer tools with lots of REST API calls.
               
-              You don't need to understand what this is doing to do the assignment.
-              */
-              const defaultTimeout = 5000;
-              const maxTimeout = 20000;
-              let timeout = 5000;
-              
-              function connect() {
-                const socket = new WebSocket("ws://" + window.location.host + "/ws");
-              
-                socket.addEventListener("message", (event) => {
-                  document.getElementById("database_contents").innerHTML = event.data;
-                });
-              
-                socket.addEventListener("open", () => {
-                  timeout = defaultTimeout;
-                });
-              
-                socket.addEventListener("close", () => {
-                  // reconnect
-                  setTimeout(connect, timeout);
-                });
-              
-                socket.addEventListener("error", (event) => {
-                  console.log("Error encountered:", event);
-                  socket.close();
-                  setTimeout(connect, timeout);
-                  timeout = Math.min(timeout * 1.5, maxTimeout);
-                });
-              }
-              
-              connect();
-              </script>
           </body>
       </html>`;
 
