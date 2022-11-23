@@ -464,8 +464,8 @@ icon: any;
   is_delete TEXT
   */
   const userid = req.json.userid;
-  const title = req.json.title;
-  const body = req.json.body;
+  const title = insteadStr(req.json.title,",","，");
+  const body = insteadStr(req.json.body,",","，");
   const icon = req.json.icon;
 
   const db = new DB("thread.db");
@@ -531,7 +531,7 @@ titleid: any;
 }; }, params: any) => {
   const titleid = req.json.titleid;
   const userid = req.json.userid;
-  const comment = req.json.comment;
+  const comment = insteadStr(req.json.comment,",","，");
   console.log("0: "+comment + " | " + req.json.comment);
   const scores = req.json.scores;
   const ishidden = req.json.ishidden;
