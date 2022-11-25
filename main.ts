@@ -520,7 +520,7 @@ router.post("^/api/v1/getavgscore/?$", (req: { json: {titleid: any;}; }, params:
       status: Status.OK,
     };
   } else {
-    return apiError(`no titleid ${req.json.titleid}`,Status.NotFound,);
+    return apiError(`no titleid ${req.json.titleid} or have no coments`,Status.NotFound,);
   }
 });
 
