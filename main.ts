@@ -81,13 +81,13 @@ const databaseJSON = `{
       "posts": [
         {
           "text": "To read Shakespeare’s poems and still think that what he says about time is just time and what he says about love is just love is to treat Shakespeare as a beat poet and the poems as meat from the supermarket freezer. Life is less than a line of metaphor in the literal sense of Shakespeare.",
-          "score": 10,
+          "score": 3,
           "hidden": 0,
           "userid": 1
         },
         {
           "text": "This infinite universe is all illusion to me， and you are my rose， my entire possession.",
-          "score": 9,
+          "score": 4,
           "hidden": 1,
           "userid": 2
         }
@@ -101,13 +101,13 @@ const databaseJSON = `{
       "posts": [
         {
           "text": "Shakespeare expanded my understanding of poetry. Before that， all I knew was that poetry could be used to express love and affection. Now I know that it can also be used to“Urge a friend to marry”. True. Everything can be a poem.",
-          "score": 8,
+          "score": 5,
           "hidden": 0,
           "userid": 3
         },
         {
           "text": "The themes of love poems have been turned over and over again by later generations of poets， but Shakespeare’s poems are still shocking to read.",
-          "score": 7,
+          "score": 1,
           "hidden": 0,
           "userid": 4
         }
@@ -121,13 +121,13 @@ const databaseJSON = `{
       "posts": [
         {
           "text": "Poetry is beautiful， more beautiful than all his plays， because the play is someone else’s， the poem is his own.",
-          "score": 6,
+          "score": 5,
           "hidden": 0,
           "userid": 5
         },
         {
           "text": "The only thing that can be felt is the classical beauty that settles between the lines， the truth against the lies， the virtue against the hypocrisy， the timelessness of love and poetry against the finiteness of time.",
-          "score": 5,
+          "score": 4,
           "hidden": 0,
           "userid": 1
         }
@@ -161,13 +161,13 @@ const databaseJSON = `{
       "posts": [
         {
           "text": "",
-          "score": 0,
+          "score": 1,
           "hidden": 0,
           "userid": 4
         },
         {
           "text": "",
-          "score": 0,
+          "score": 2,
           "hidden": 0,
           "userid": 5
         }

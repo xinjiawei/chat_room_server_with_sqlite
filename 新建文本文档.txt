@@ -1,1 +1,0 @@
-sudo docker build --no-cache -t xinjiawei1/poem-site-w-denoite .
