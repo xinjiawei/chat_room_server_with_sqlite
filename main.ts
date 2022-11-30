@@ -544,8 +544,9 @@ titleid: any;
   const re = eval('(' + re0 + ')').toString();
   let userids = re.toString().split(",",);
   for(const item of userids){
-    if(item == userid) 
-      return apiError(`you are alredy commnet ${req.json.titleid}`,Status.Conflict,)
+    if(item == userid) {
+      return apiError(`you are alredy commnet ${req.json.titleid}`,Status.Conflict,);
+    }
     else {
       continue;
     }
@@ -560,14 +561,16 @@ titleid: any;
     is_hidden INTEGER,
     is_delete TEXT
     */
-  db.query<[string, number]>("INSERT INTO forum_content (title_id,user_id,content,score,is_hidden,is_delete) VALUES (?,?,?,?,?,?)", 
-  [titleid, userid, comment,scores,ishidden,"0"]);
 
   console.log("all commented users: " + re);
   //const result1 = re.passwd;
+  const re2 = JSON.stringify(db.query<[string, number]>("SELECT owner_id FROM forum_title WHERE id = ?", [titleid]));
+  const re3 = eval('(' + re2 + ')').toString();
 
-  // 在这个表里titleid和userid是共存的, 如果有title_id ,必然至少有一个user_id, 所以不用担心user id是否为空的情况.
-  if(re !== "") {
+  if(re3 !== "") {
+    db.query<[string, number]>("INSERT INTO forum_content (title_id,user_id,content,score,is_hidden,is_delete) VALUES (?,?,?,?,?,?)", 
+    [titleid, userid, comment,scores,ishidden,"0"]);
+      // 在这个表里titleid和userid是共存的, 如果有title_id ,必然至少有一个user_id, 所以不用担心user id是否为空的情况.
     const info = {
       status: "success",
       titleid: titleid
